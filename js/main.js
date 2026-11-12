@@ -223,6 +223,11 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
+  function isValidLogin(value) {
+    var login = String(value || "").trim().toLowerCase();
+    return login === "admin" || isValidEmail(login);
+  }
+
   function isValidPhone(value) {
     var digits = String(value).replace(/\D/g, "");
     return digits.length >= 10 && digits.length <= 12;
@@ -771,8 +776,8 @@
       '<button class="btn btn-secondary" type="button" data-auth-tab="register">Регистрация</button>' +
       "</div>" +
       '<form class="auth-modal-pane" id="modal-login-form" data-auth-pane="login" novalidate>' +
-      '<div class="field"><label for="modal-login-email">Email</label>' +
-      '<input id="modal-login-email" name="email" type="email" autocomplete="username" aria-describedby="modal-login-email-error">' +
+      '<div class="field"><label for="modal-login-email">Email или логин</label>' +
+      '<input id="modal-login-email" name="email" type="text" autocomplete="username" aria-describedby="modal-login-email-error">' +
       '<p class="field-error" id="modal-login-email-error" role="alert"></p></div>' +
       '<div class="field"><label for="modal-login-password">Пароль</label>' +
       '<input id="modal-login-password" name="password" type="password" autocomplete="current-password" aria-describedby="modal-login-password-error">' +
@@ -859,8 +864,8 @@
         var email = login.email.value.trim();
         var password = login.password.value;
         var ok = true;
-        if (!isValidEmail(email)) {
-          showFieldError(login.email, "Введите корректный email");
+        if (!isValidLogin(email)) {
+          showFieldError(login.email, "Введите email или логин");
           ok = false;
         }
         if (password.length < 4) {
@@ -878,7 +883,12 @@
           });
           saveUser(user);
           setStatus(status, "Вы вошли как " + user.name, true);
-          setTimeout(closeAuthModal, 400);
+          setTimeout(function () {
+            closeAuthModal();
+            if (user.is_admin && !/admin\.html$/i.test(location.pathname)) {
+              // пункт БД уже в меню; на странице БД обновится панель
+            }
+          }, 400);
         } catch (err) {
           setStatus(status, err.message || "Неверный email или пароль", false);
         }
@@ -1047,46 +1057,6 @@
   }
 
   function setupAdminPanel() {
-    var form = document.getElementById("admin-login-form");
-    if (form) {
-      form.addEventListener("submit", async function (event) {
-        event.preventDefault();
-        clearFieldErrors(form);
-        var status = document.getElementById("admin-login-status");
-        var email = form.email.value.trim();
-        var password = form.password.value;
-        var ok = true;
-        if (!isValidEmail(email)) {
-          showFieldError(form.email, "Введите email администратора");
-          ok = false;
-        }
-        if (password.length < 4) {
-          showFieldError(form.password, "Введите пароль");
-          ok = false;
-        }
-        if (!ok) {
-          setStatus(status, "Исправьте ошибки в форме", false);
-          return;
-        }
-        try {
-          var user = await api("/api/login", {
-            method: "POST",
-            body: JSON.stringify({ email: email, password: password })
-          });
-          if (!user.is_admin) {
-            setStatus(status, "Этот аккаунт не является администратором", false);
-            return;
-          }
-          saveUser(user);
-          setStatus(status, "Вход выполнен. Открыт раздел БД.", true);
-          updateAdminPanels();
-          if (location.hash !== "#db") location.hash = "db";
-        } catch (err) {
-          setStatus(status, err.message || "Неверный логин или пароль", false);
-        }
-      });
-    }
-
     var logoutBtn = document.getElementById("admin-logout-btn");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", async function () {
@@ -1097,7 +1067,6 @@
         }
         saveUser(null);
         updateAdminPanels();
-        setStatus(document.getElementById("admin-login-status"), "Вы вышли из админки", true);
       });
     }
 

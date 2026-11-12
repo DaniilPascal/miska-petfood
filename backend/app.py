@@ -33,8 +33,8 @@ CORS_ORIGINS = [
 DEMO_EMAIL = os.getenv("MISKA_DEMO_EMAIL", "demo@miska.shop")
 DEMO_PASSWORD = os.getenv("MISKA_DEMO_PASSWORD", "demo1234")
 DEMO_NAME = os.getenv("MISKA_DEMO_NAME", "Демо Пользователь")
-ADMIN_EMAIL = os.getenv("MISKA_ADMIN_EMAIL", "admin@miska.shop")
-ADMIN_PASSWORD = os.getenv("MISKA_ADMIN_PASSWORD", "admin1234")
+ADMIN_EMAIL = os.getenv("MISKA_ADMIN_EMAIL", "admin").strip().lower()
+ADMIN_PASSWORD = os.getenv("MISKA_ADMIN_PASSWORD", "123456")
 ADMIN_NAME = os.getenv("MISKA_ADMIN_NAME", "Администратор")
 APP_VERSION = os.getenv("MISKA_APP_VERSION", "4.0.0")
 
@@ -287,18 +287,32 @@ def init_db() -> None:
             (DEMO_NAME, DEMO_EMAIL.lower(), pwd_context.hash(DEMO_PASSWORD)),
         )
 
-    # администратор
-    admin = cur.execute("SELECT id FROM users WHERE email = ?", (ADMIN_EMAIL.lower(),)).fetchone()
+    # администратор: логин admin / пароль 123456 (не показывается на сайте)
+    admin_login = ADMIN_EMAIL.lower()
+    admin_hash = pwd_context.hash(ADMIN_PASSWORD)
+    admin = cur.execute("SELECT id FROM users WHERE email = ?", (admin_login,)).fetchone()
     if not admin:
         cur.execute(
             """
             INSERT INTO users (name, email, password_hash, token, is_admin)
             VALUES (?, ?, ?, NULL, 1)
             """,
-            (ADMIN_NAME, ADMIN_EMAIL.lower(), pwd_context.hash(ADMIN_PASSWORD)),
+            (ADMIN_NAME, admin_login, admin_hash),
         )
     else:
-        cur.execute("UPDATE users SET is_admin = 1 WHERE email = ?", (ADMIN_EMAIL.lower(),))
+        cur.execute(
+            """
+            UPDATE users
+            SET name = ?, password_hash = ?, is_admin = 1
+            WHERE email = ?
+            """,
+            (ADMIN_NAME, admin_hash, admin_login),
+        )
+    # старый логин админа больше не админ
+    cur.execute(
+        "UPDATE users SET is_admin = 0 WHERE email = ? AND email != ?",
+        ("admin@miska.shop", admin_login),
+    )
 
     conn.commit()
     conn.close()
@@ -406,6 +420,8 @@ def register(payload: RegisterIn) -> UserOut:
     name = payload.name.strip()
     if "@" not in email:
         raise HTTPException(status_code=400, detail="Некорректный email")
+    if email == ADMIN_EMAIL.lower():
+        raise HTTPException(status_code=400, detail="Этот логин недоступен для регистрации")
 
     conn = get_conn()
     exists = conn.execute("SELECT id FROM users WHERE email = ?", (email,)).fetchone()

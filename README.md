@@ -14,7 +14,7 @@ https://dashboard.render.com/blueprints/new?repo=https%3A%2F%2Fgithub.com%2FDani
 
 ### Тестовые учётные записи
 - Покупатель: `demo@miska.shop` / `demo1234`
-- Админ (раздел БД): `admin@miska.shop` / `admin1234`
+- Админ (после входа появится пункт «БД»): `admin` / `123456`
 
 ## Стек по практикам
 

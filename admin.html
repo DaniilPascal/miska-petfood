@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Админка — Миска</title>
+  <title>База данных — Миска</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -25,8 +25,7 @@
         <a href="contacts.html">Контакты</a>
         <button type="button" class="nav-auth-btn" data-open-auth>Вход</button>
         <a href="auth.html" data-cabinet-link hidden>Кабинет</a>
-        <a href="admin.html" aria-current="page">Админ</a>
-        <a href="admin.html#db" data-admin-db-link hidden>БД</a>
+        <a href="admin.html#db" data-admin-db-link hidden aria-current="page">БД</a>
         <span class="nav-actions">
           <span class="user-chip" data-user-chip hidden></span>
           <a class="btn btn-secondary" href="cart.html">Корзина (<span data-cart-count>0</span>)</a>
@@ -38,35 +37,22 @@
   <main class="container section">
     <div class="section-head">
       <div>
-        <h1 class="page-title">Админ-панель</h1>
-        <p class="lead">Вход для администратора. После входа открывается раздел с базой данных.</p>
+        <h1 class="page-title">База данных</h1>
+        <p class="lead">Содержимое таблиц магазина</p>
       </div>
       <button class="btn btn-ghost" type="button" id="admin-logout-btn" hidden>Выйти</button>
     </div>
 
     <section class="panel" id="admin-login-panel">
-      <h2>Вход в админку</h2>
-      <form id="admin-login-form" novalidate>
-        <div class="field">
-          <label for="admin-email">Логин (email)</label>
-          <input id="admin-email" name="email" type="email" autocomplete="username" value="admin@miska.shop" aria-describedby="admin-email-error">
-          <p class="field-error" id="admin-email-error" role="alert"></p>
-        </div>
-        <div class="field">
-          <label for="admin-password">Пароль</label>
-          <input id="admin-password" name="password" type="password" autocomplete="current-password" value="admin1234" aria-describedby="admin-password-error">
-          <p class="field-error" id="admin-password-error" role="alert"></p>
-        </div>
-        <button class="btn btn-primary" type="submit">Войти</button>
-        <p class="form-status" id="admin-login-status" role="status"></p>
-        <p class="lead">Логин: <code>admin@miska.shop</code> · пароль: <code>admin1234</code></p>
-      </form>
+      <h2>Нужен вход</h2>
+      <p class="lead">Откройте «Вход» в меню и авторизуйтесь, чтобы увидеть базу данных.</p>
+      <button class="btn btn-primary" type="button" data-open-auth>Открыть вход</button>
     </section>
 
     <section class="panel stack-gap" id="admin-db-panel" hidden>
       <div class="section-head">
         <div>
-          <h2 id="db">База данных</h2>
+          <h2 id="db">Таблицы</h2>
           <p class="lead" id="admin-db-meta">Загрузка…</p>
         </div>
         <button class="btn btn-ghost" type="button" id="reload-db-btn">Обновить</button>
