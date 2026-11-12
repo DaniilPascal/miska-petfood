@@ -9,7 +9,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     MISKA_CORS_ORIGINS=* \
     MISKA_DEMO_EMAIL=demo@miska.shop \
     MISKA_DEMO_PASSWORD=demo1234 \
-    MISKA_DEMO_NAME=Демо Пользователь
+    MISKA_DEMO_NAME="Demo User"
 
 COPY backend/requirements.txt /app/backend/requirements.txt
 RUN pip install --no-cache-dir -r /app/backend/requirements.txt
