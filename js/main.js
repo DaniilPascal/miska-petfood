@@ -104,11 +104,17 @@
     document.querySelectorAll("[data-admin-db-link]").forEach(function (el) {
       el.hidden = !isAdmin;
     });
+    document.querySelectorAll("[data-open-auth]").forEach(function (el) {
+      if (el.classList.contains("nav-auth-btn")) el.hidden = !!user;
+    });
+    document.querySelectorAll("[data-cabinet-link]").forEach(function (el) {
+      el.hidden = !user;
+    });
     var hint = document.getElementById("checkout-auth-hint");
     if (hint) {
       hint.innerHTML = user
         ? "Вы вошли как <strong>" + (user.name || user.email) + "</strong>. Можно оформлять заказ."
-        : 'Чтобы оформить заказ, сначала <a href="auth.html">войдите</a> в кабинет.';
+        : 'Чтобы оформить заказ, сначала <button type="button" class="linkish" data-open-auth>войдите</button>.';
     }
   }
 
@@ -726,12 +732,130 @@
       });
     }
 
-    var login = document.getElementById("login-form");
-    if (login) {
+    var logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async function () {
+        try {
+          await api("/api/logout", { method: "POST", headers: authHeaders() });
+        } catch (e) {
+          // даже если сервер недоступен, выходим локально
+        }
+        saveUser(null);
+      });
+    }
+
+    var reloadOrders = document.getElementById("reload-orders");
+    if (reloadOrders) reloadOrders.addEventListener("click", loadOrders);
+
+    setupAuthModal();
+    setupAdminPanel();
+  }
+
+  function ensureAuthModal() {
+    if (document.getElementById("auth-modal")) return;
+    var modal = document.createElement("div");
+    modal.id = "auth-modal";
+    modal.className = "auth-modal";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("aria-labelledby", "auth-modal-title");
+    modal.innerHTML =
+      '<div class="auth-modal-dialog">' +
+      '<div class="auth-modal-head">' +
+      '<div><h2 id="auth-modal-title">Вход и регистрация</h2>' +
+      '<p class="lead">Войдите в аккаунт или создайте новый</p></div>' +
+      '<button class="auth-modal-close" type="button" data-close-auth aria-label="Закрыть">×</button>' +
+      "</div>" +
+      '<div class="auth-modal-tabs">' +
+      '<button class="btn btn-secondary is-active" type="button" data-auth-tab="login">Вход</button>' +
+      '<button class="btn btn-secondary" type="button" data-auth-tab="register">Регистрация</button>' +
+      "</div>" +
+      '<form class="auth-modal-pane" id="modal-login-form" data-auth-pane="login" novalidate>' +
+      '<div class="field"><label for="modal-login-email">Email</label>' +
+      '<input id="modal-login-email" name="email" type="email" autocomplete="username" aria-describedby="modal-login-email-error">' +
+      '<p class="field-error" id="modal-login-email-error" role="alert"></p></div>' +
+      '<div class="field"><label for="modal-login-password">Пароль</label>' +
+      '<input id="modal-login-password" name="password" type="password" autocomplete="current-password" aria-describedby="modal-login-password-error">' +
+      '<p class="field-error" id="modal-login-password-error" role="alert"></p></div>' +
+      '<button class="btn btn-primary" type="submit">Войти</button>' +
+      '<p class="form-status" id="modal-login-status" role="status"></p>' +
+      "</form>" +
+      '<form class="auth-modal-pane" id="modal-register-form" data-auth-pane="register" hidden novalidate>' +
+      '<div class="field"><label for="modal-reg-name">Имя</label>' +
+      '<input id="modal-reg-name" name="name" type="text" autocomplete="name" aria-describedby="modal-reg-name-error">' +
+      '<p class="field-error" id="modal-reg-name-error" role="alert"></p></div>' +
+      '<div class="field"><label for="modal-reg-email">Email</label>' +
+      '<input id="modal-reg-email" name="email" type="email" autocomplete="username" aria-describedby="modal-reg-email-error">' +
+      '<p class="field-error" id="modal-reg-email-error" role="alert"></p></div>' +
+      '<div class="field"><label for="modal-reg-password">Пароль</label>' +
+      '<input id="modal-reg-password" name="password" type="password" autocomplete="new-password" aria-describedby="modal-reg-password-error">' +
+      '<p class="field-error" id="modal-reg-password-error" role="alert"></p></div>' +
+      '<button class="btn btn-accent" type="submit">Создать аккаунт</button>' +
+      '<p class="form-status" id="modal-register-status" role="status"></p>' +
+      "</form>" +
+      "</div>";
+    document.body.appendChild(modal);
+  }
+
+  function openAuthModal(tab) {
+    ensureAuthModal();
+    var modal = document.getElementById("auth-modal");
+    modal.classList.add("is-open");
+    document.body.classList.add("auth-modal-open");
+    switchAuthTab(tab || "login");
+  }
+
+  function closeAuthModal() {
+    var modal = document.getElementById("auth-modal");
+    if (!modal) return;
+    modal.classList.remove("is-open");
+    document.body.classList.remove("auth-modal-open");
+  }
+
+  function switchAuthTab(tab) {
+    var modal = document.getElementById("auth-modal");
+    if (!modal) return;
+    modal.querySelectorAll("[data-auth-tab]").forEach(function (btn) {
+      btn.classList.toggle("is-active", btn.getAttribute("data-auth-tab") === tab);
+    });
+    modal.querySelectorAll("[data-auth-pane]").forEach(function (pane) {
+      pane.hidden = pane.getAttribute("data-auth-pane") !== tab;
+    });
+  }
+
+  function setupAuthModal() {
+    ensureAuthModal();
+    var modal = document.getElementById("auth-modal");
+
+    document.addEventListener("click", function (event) {
+      var openBtn = event.target.closest("[data-open-auth]");
+      if (openBtn) {
+        event.preventDefault();
+        openAuthModal(openBtn.getAttribute("data-auth-tab") || "login");
+        return;
+      }
+      if (event.target.closest("[data-close-auth]")) {
+        closeAuthModal();
+        return;
+      }
+      if (event.target === modal) closeAuthModal();
+      var tabBtn = event.target.closest("[data-auth-tab]");
+      if (tabBtn && modal.contains(tabBtn)) {
+        switchAuthTab(tabBtn.getAttribute("data-auth-tab"));
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") closeAuthModal();
+    });
+
+    var login = document.getElementById("modal-login-form");
+    if (login && !login.dataset.bound) {
+      login.dataset.bound = "1";
       login.addEventListener("submit", async function (event) {
         event.preventDefault();
         clearFieldErrors(login);
-        var status = document.getElementById("login-status");
+        var status = document.getElementById("modal-login-status");
         var email = login.email.value.trim();
         var password = login.password.value;
         var ok = true;
@@ -754,18 +878,20 @@
           });
           saveUser(user);
           setStatus(status, "Вы вошли как " + user.name, true);
+          setTimeout(closeAuthModal, 400);
         } catch (err) {
           setStatus(status, err.message || "Неверный email или пароль", false);
         }
       });
     }
 
-    var register = document.getElementById("register-form");
-    if (register) {
+    var register = document.getElementById("modal-register-form");
+    if (register && !register.dataset.bound) {
+      register.dataset.bound = "1";
       register.addEventListener("submit", async function (event) {
         event.preventDefault();
         clearFieldErrors(register);
-        var status = document.getElementById("register-status");
+        var status = document.getElementById("modal-register-status");
         var name = register.name.value.trim();
         var email = register.email.value.trim();
         var password = register.password.value;
@@ -794,29 +920,12 @@
           saveUser(user);
           setStatus(status, "Аккаунт создан. Добро пожаловать, " + user.name + "!", true);
           register.reset();
+          setTimeout(closeAuthModal, 500);
         } catch (err) {
           setStatus(status, err.message || "Не удалось зарегистрироваться", false);
         }
       });
     }
-
-    var logoutBtn = document.getElementById("logout-btn");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", async function () {
-        try {
-          await api("/api/logout", { method: "POST", headers: authHeaders() });
-        } catch (e) {
-          // даже если сервер недоступен, выходим локально
-        }
-        saveUser(null);
-        setStatus(document.getElementById("login-status"), "Вы вышли из аккаунта", true);
-      });
-    }
-
-    var reloadOrders = document.getElementById("reload-orders");
-    if (reloadOrders) reloadOrders.addEventListener("click", loadOrders);
-
-    setupAdminPanel();
   }
 
   function escapeHtml(value) {

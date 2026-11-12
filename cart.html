@@ -23,7 +23,8 @@
         <a href="product.html?id=1">Товар</a>
         <a href="cart.html" aria-current="page">Корзина</a>
         <a href="contacts.html">Контакты</a>
-        <a href="auth.html">Вход</a>
+        <button type="button" class="nav-auth-btn" data-open-auth>Вход</button>
+        <a href="auth.html" data-cabinet-link hidden>Кабинет</a>
         <a href="admin.html">Админ</a>
         <a href="admin.html#db" data-admin-db-link hidden>БД</a>
         <span class="nav-actions">
@@ -72,7 +73,7 @@
           <label for="checkout-comment">Комментарий</label>
           <textarea id="checkout-comment" name="comment" placeholder="Код домофона, удобное время…"></textarea>
         </div>
-        <p class="lead" id="checkout-auth-hint">Чтобы оформить заказ, сначала <a href="auth.html">войдите</a> в кабинет.</p>
+        <p class="lead" id="checkout-auth-hint">Чтобы оформить заказ, сначала <button type="button" class="linkish" data-open-auth>войдите</button>.</p>
         <button class="btn btn-primary" type="submit">Подтвердить заказ</button>
         <p class="form-status" id="checkout-status" role="status"></p>
       </form>

@@ -23,7 +23,8 @@
         <a href="product.html?id=1">Товар</a>
         <a href="cart.html">Корзина</a>
         <a href="contacts.html">Контакты</a>
-        <a href="auth.html" aria-current="page">Кабинет</a>
+        <button type="button" class="nav-auth-btn" data-open-auth>Вход</button>
+        <a href="auth.html" data-cabinet-link aria-current="page">Кабинет</a>
         <a href="admin.html">Админ</a>
         <a href="admin.html#db" data-admin-db-link hidden>БД</a>
         <span class="nav-actions">
@@ -38,48 +39,15 @@
     <div class="section-head">
       <div>
         <h1 class="page-title">Личный кабинет</h1>
-        <p class="lead">Создайте аккаунт или войдите — в кабинете доступны профиль и история заказов.</p>
+        <p class="lead">Профиль и история заказов доступны после входа.</p>
       </div>
       <button class="btn btn-ghost" type="button" id="logout-btn" hidden>Выйти</button>
     </div>
 
-    <div id="guest-panel" class="auth-grid">
-      <form class="panel" id="login-form" novalidate>
-        <h2>Вход</h2>
-        <div class="field">
-          <label for="login-email">Email</label>
-          <input id="login-email" name="email" type="email" autocomplete="username" aria-describedby="login-email-error">
-          <p class="field-error" id="login-email-error" role="alert"></p>
-        </div>
-        <div class="field">
-          <label for="login-password">Пароль</label>
-          <input id="login-password" name="password" type="password" autocomplete="current-password" minlength="4" aria-describedby="login-password-error">
-          <p class="field-error" id="login-password-error" role="alert"></p>
-        </div>
-        <button class="btn btn-primary" type="submit">Войти</button>
-        <p class="form-status" id="login-status" role="status"></p>
-      </form>
-
-      <form class="panel" id="register-form" novalidate>
-        <h2>Регистрация</h2>
-        <div class="field">
-          <label for="reg-name">Имя</label>
-          <input id="reg-name" name="name" type="text" autocomplete="name" aria-describedby="reg-name-error">
-          <p class="field-error" id="reg-name-error" role="alert"></p>
-        </div>
-        <div class="field">
-          <label for="reg-email">Email</label>
-          <input id="reg-email" name="email" type="email" autocomplete="username" aria-describedby="reg-email-error">
-          <p class="field-error" id="reg-email-error" role="alert"></p>
-        </div>
-        <div class="field">
-          <label for="reg-password">Пароль</label>
-          <input id="reg-password" name="password" type="password" autocomplete="new-password" minlength="4" aria-describedby="reg-password-error">
-          <p class="field-error" id="reg-password-error" role="alert"></p>
-        </div>
-        <button class="btn btn-accent" type="submit">Создать аккаунт</button>
-        <p class="form-status" id="register-status" role="status"></p>
-      </form>
+    <div id="guest-panel" class="panel">
+      <h2>Вы не вошли</h2>
+      <p class="lead">Нажмите кнопку ниже — откроется окно входа и регистрации.</p>
+      <button class="btn btn-primary" type="button" data-open-auth>Войти или зарегистрироваться</button>
     </div>
 
     <div id="user-panel" hidden>
