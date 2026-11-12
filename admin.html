@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Админка — Миска</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">
+        <img src="images/logo.svg" width="44" height="44" alt="Логотип магазина Миска">
+        <span>Миска</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Меню</button>
+      <nav id="site-nav" class="site-nav" aria-label="Основное меню">
+        <a href="index.html">Главная</a>
+        <a href="catalog.html">Каталог</a>
+        <a href="product.html?id=1">Товар</a>
+        <a href="cart.html">Корзина</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="auth.html">Вход</a>
+        <a href="admin.html" aria-current="page">Админ</a>
+        <a href="admin.html#db" data-admin-db-link hidden>БД</a>
+        <span class="nav-actions">
+          <span class="user-chip" data-user-chip hidden></span>
+          <a class="btn btn-secondary" href="cart.html">Корзина (<span data-cart-count>0</span>)</a>
+        </span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container section">
+    <div class="section-head">
+      <div>
+        <h1 class="page-title">Админ-панель</h1>
+        <p class="lead">Вход для администратора. После входа открывается раздел с базой данных.</p>
+      </div>
+      <button class="btn btn-ghost" type="button" id="admin-logout-btn" hidden>Выйти</button>
+    </div>
+
+    <section class="panel" id="admin-login-panel">
+      <h2>Вход в админку</h2>
+      <form id="admin-login-form" novalidate>
+        <div class="field">
+          <label for="admin-email">Логин (email)</label>
+          <input id="admin-email" name="email" type="email" autocomplete="username" value="admin@miska.shop" aria-describedby="admin-email-error">
+          <p class="field-error" id="admin-email-error" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="admin-password">Пароль</label>
+          <input id="admin-password" name="password" type="password" autocomplete="current-password" value="admin1234" aria-describedby="admin-password-error">
+          <p class="field-error" id="admin-password-error" role="alert"></p>
+        </div>
+        <button class="btn btn-primary" type="submit">Войти</button>
+        <p class="form-status" id="admin-login-status" role="status"></p>
+        <p class="lead">Логин: <code>admin@miska.shop</code> · пароль: <code>admin1234</code></p>
+      </form>
+    </section>
+
+    <section class="panel stack-gap" id="admin-db-panel" hidden>
+      <div class="section-head">
+        <div>
+          <h2 id="db">База данных</h2>
+          <p class="lead" id="admin-db-meta">Загрузка…</p>
+        </div>
+        <button class="btn btn-ghost" type="button" id="reload-db-btn">Обновить</button>
+      </div>
+      <div class="db-tabs" id="db-tabs" role="tablist" aria-label="Таблицы базы"></div>
+      <div id="db-table-root" class="db-table-root"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>Миска</strong>
+        <p class="slogan">«Сытый питомец — спокойный хозяин»</p>
+      </div>
+      <div>
+        <p>Санкт-Петербург, Невский пр., 28</p>
+        <p>+7 (812) 555-12-34 · daily 10:00–21:00</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/products-data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

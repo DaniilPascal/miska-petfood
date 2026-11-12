@@ -12,9 +12,9 @@ https://dashboard.render.com/blueprints/new?repo=https%3A%2F%2Fgithub.com%2FDani
 
 После деплоя адрес будет вида `https://miska-petfood.onrender.com` (HTTPS автоматически).
 
-### Тестовая учётная запись
-- **email:** `demo@miska.shop`
-- **пароль:** `demo1234`
+### Тестовые учётные записи
+- Покупатель: `demo@miska.shop` / `demo1234`
+- Админ (раздел БД): `admin@miska.shop` / `admin1234`
 
 ## Стек по практикам
 

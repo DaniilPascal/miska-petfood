@@ -814,6 +814,63 @@ a:hover {
   padding-left: 1.1rem;
 }
 
+.db-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.db-tab.is-active {
+  background: var(--brand);
+  color: #fffdf9;
+  border-color: var(--brand);
+}
+
+.db-table-root {
+  width: 100%;
+}
+
+.db-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.db-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+  font-size: 0.9rem;
+}
+
+.db-table caption {
+  text-align: left;
+  padding: 0.75rem 0.9rem;
+  font-weight: 700;
+  background: var(--bg-deep);
+}
+
+.db-table th,
+.db-table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+  word-break: break-word;
+}
+
+.db-table th {
+  background: rgba(47, 93, 80, 0.08);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.db-table tr:last-child td {
+  border-bottom: 0;
+}
+
 @media (max-width: 900px) {
   .hero,
   .product-layout,

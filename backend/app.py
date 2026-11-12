@@ -33,6 +33,9 @@ CORS_ORIGINS = [
 DEMO_EMAIL = os.getenv("MISKA_DEMO_EMAIL", "demo@miska.shop")
 DEMO_PASSWORD = os.getenv("MISKA_DEMO_PASSWORD", "demo1234")
 DEMO_NAME = os.getenv("MISKA_DEMO_NAME", "Демо Пользователь")
+ADMIN_EMAIL = os.getenv("MISKA_ADMIN_EMAIL", "admin@miska.shop")
+ADMIN_PASSWORD = os.getenv("MISKA_ADMIN_PASSWORD", "admin1234")
+ADMIN_NAME = os.getenv("MISKA_ADMIN_NAME", "Администратор")
 APP_VERSION = os.getenv("MISKA_APP_VERSION", "4.0.0")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -63,6 +66,7 @@ class UserOut(BaseModel):
     name: str
     email: str
     token: str
+    is_admin: bool = False
 
 
 class OrderItemIn(BaseModel):
@@ -197,6 +201,8 @@ def init_db() -> None:
     user_cols = [r["name"] for r in cur.execute("PRAGMA table_info(users)").fetchall()]
     if "token" not in user_cols:
         cur.execute("ALTER TABLE users ADD COLUMN token TEXT")
+    if "is_admin" not in user_cols:
+        cur.execute("ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0")
     cur.execute(
         """
         CREATE TABLE IF NOT EXISTS products (
@@ -270,13 +276,29 @@ def init_db() -> None:
                     row,
                 )
 
-    # тестовая учётная запись для проверки на хостинге (ПР 4)
+    # демо-покупатель
     demo = cur.execute("SELECT id FROM users WHERE email = ?", (DEMO_EMAIL.lower(),)).fetchone()
     if not demo:
         cur.execute(
-            "INSERT INTO users (name, email, password_hash, token) VALUES (?, ?, ?, NULL)",
+            """
+            INSERT INTO users (name, email, password_hash, token, is_admin)
+            VALUES (?, ?, ?, NULL, 0)
+            """,
             (DEMO_NAME, DEMO_EMAIL.lower(), pwd_context.hash(DEMO_PASSWORD)),
         )
+
+    # администратор
+    admin = cur.execute("SELECT id FROM users WHERE email = ?", (ADMIN_EMAIL.lower(),)).fetchone()
+    if not admin:
+        cur.execute(
+            """
+            INSERT INTO users (name, email, password_hash, token, is_admin)
+            VALUES (?, ?, ?, NULL, 1)
+            """,
+            (ADMIN_NAME, ADMIN_EMAIL.lower(), pwd_context.hash(ADMIN_PASSWORD)),
+        )
+    else:
+        cur.execute("UPDATE users SET is_admin = 1 WHERE email = ?", (ADMIN_EMAIL.lower(),))
 
     conn.commit()
     conn.close()
@@ -300,11 +322,16 @@ def row_to_product(row: sqlite3.Row) -> dict:
 
 
 def user_out(row: sqlite3.Row) -> UserOut:
+    try:
+        is_admin = bool(row["is_admin"])
+    except (KeyError, IndexError):
+        is_admin = False
     return UserOut(
         id=row["id"],
         name=row["name"],
         email=row["email"],
         token=row["token"] or "",
+        is_admin=is_admin,
     )
 
 
@@ -327,6 +354,16 @@ def get_current_user(authorization: Optional[str] = Header(default=None)) -> sql
     if not row:
         raise HTTPException(status_code=401, detail="Сессия недействительна, войдите снова")
     return row
+
+
+def get_admin_user(user: sqlite3.Row = Depends(get_current_user)) -> sqlite3.Row:
+    try:
+        is_admin = bool(user["is_admin"])
+    except (KeyError, IndexError):
+        is_admin = False
+    if not is_admin:
+        raise HTTPException(status_code=403, detail="Доступ только для администратора")
+    return user
 
 
 @app.on_event("startup")
@@ -378,7 +415,10 @@ def register(payload: RegisterIn) -> UserOut:
 
     password_hash = pwd_context.hash(payload.password)
     cur = conn.execute(
-        "INSERT INTO users (name, email, password_hash, token) VALUES (?, ?, ?, NULL)",
+        """
+        INSERT INTO users (name, email, password_hash, token, is_admin)
+        VALUES (?, ?, ?, NULL, 0)
+        """,
         (name, email, password_hash),
     )
     user_id = cur.lastrowid
@@ -413,7 +453,48 @@ def logout(user: sqlite3.Row = Depends(get_current_user)) -> dict:
 
 @app.get("/api/me")
 def me(user: sqlite3.Row = Depends(get_current_user)) -> dict:
-    return {"id": user["id"], "name": user["name"], "email": user["email"]}
+    try:
+        is_admin = bool(user["is_admin"])
+    except (KeyError, IndexError):
+        is_admin = False
+    return {
+        "id": user["id"],
+        "name": user["name"],
+        "email": user["email"],
+        "is_admin": is_admin,
+    }
+
+
+@app.get("/api/admin/db")
+def admin_db(admin: sqlite3.Row = Depends(get_admin_user)) -> dict:
+    """Полный просмотр таблиц SQLite для админки."""
+    conn = get_conn()
+    table_names = [
+        row["name"]
+        for row in conn.execute(
+            """
+            SELECT name FROM sqlite_master
+            WHERE type = 'table' AND name NOT LIKE 'sqlite_%'
+            ORDER BY name
+            """
+        ).fetchall()
+    ]
+    tables = {}
+    for table in table_names:
+        columns = [col["name"] for col in conn.execute(f"PRAGMA table_info({table})").fetchall()]
+        # имена таблиц из схемы, не из пользовательского ввода
+        rows = conn.execute(f"SELECT * FROM {table}").fetchall()
+        tables[table] = {
+            "columns": columns,
+            "rows": [dict(row) for row in rows],
+            "count": len(rows),
+        }
+    conn.close()
+    return {
+        "db_file": str(DB_PATH.name),
+        "admin": {"id": admin["id"], "email": admin["email"], "name": admin["name"]},
+        "tables": tables,
+    }
 
 
 @app.post("/api/orders")

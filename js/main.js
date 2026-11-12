@@ -66,6 +66,7 @@
     else localStorage.removeItem(USER_KEY);
     updateUserChip();
     updateAuthPanels();
+    updateAdminPanels();
   }
 
   function authHeaders() {
@@ -99,6 +100,10 @@
     });
     var logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) logoutBtn.hidden = !user;
+    var isAdmin = !!(user && user.is_admin);
+    document.querySelectorAll("[data-admin-db-link]").forEach(function (el) {
+      el.hidden = !isAdmin;
+    });
     var hint = document.getElementById("checkout-auth-hint");
     if (hint) {
       hint.innerHTML = user
@@ -810,6 +815,192 @@
 
     var reloadOrders = document.getElementById("reload-orders");
     if (reloadOrders) reloadOrders.addEventListener("click", loadOrders);
+
+    setupAdminPanel();
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function renderDbTable(tableName, tableData) {
+    var root = document.getElementById("db-table-root");
+    if (!root) return;
+    if (!tableData || !tableData.columns.length) {
+      root.innerHTML = '<p class="empty-state">Таблица пуста</p>';
+      return;
+    }
+    var head = tableData.columns
+      .map(function (col) {
+        return "<th>" + escapeHtml(col) + "</th>";
+      })
+      .join("");
+    var body = tableData.rows
+      .map(function (row) {
+        return (
+          "<tr>" +
+          tableData.columns
+            .map(function (col) {
+              var cell = row[col];
+              if (cell === null || cell === undefined) cell = "";
+              return "<td>" + escapeHtml(cell) + "</td>";
+            })
+            .join("") +
+          "</tr>"
+        );
+      })
+      .join("");
+    root.innerHTML =
+      '<div class="db-table-wrap"><table class="db-table"><caption>' +
+      escapeHtml(tableName) +
+      " · " +
+      tableData.count +
+      " записей</caption><thead><tr>" +
+      head +
+      "</tr></thead><tbody>" +
+      body +
+      "</tbody></table></div>";
+  }
+
+  async function loadAdminDb(preferredTable) {
+    var meta = document.getElementById("admin-db-meta");
+    var tabs = document.getElementById("db-tabs");
+    var root = document.getElementById("db-table-root");
+    if (!root) return;
+    root.innerHTML = '<p class="lead loading-line">Загрузка базы данных</p>';
+    try {
+      var data = await api("/api/admin/db", { headers: authHeaders() });
+      var names = Object.keys(data.tables || {});
+      if (meta) {
+        meta.textContent =
+          "Файл: " +
+          data.db_file +
+          " · админ: " +
+          data.admin.email +
+          " · таблиц: " +
+          names.length;
+      }
+      if (tabs) {
+        tabs.innerHTML = names
+          .map(function (name, index) {
+            var active =
+              name === preferredTable || (!preferredTable && index === 0);
+            return (
+              '<button class="btn btn-secondary db-tab' +
+              (active ? " is-active" : "") +
+              '" type="button" data-db-table="' +
+              escapeHtml(name) +
+              '">' +
+              escapeHtml(name) +
+              " (" +
+              data.tables[name].count +
+              ")</button>"
+            );
+          })
+          .join("");
+        tabs.onclick = function (event) {
+          var btn = event.target.closest("[data-db-table]");
+          if (!btn) return;
+          tabs.querySelectorAll(".db-tab").forEach(function (el) {
+            el.classList.remove("is-active");
+          });
+          btn.classList.add("is-active");
+          renderDbTable(btn.getAttribute("data-db-table"), data.tables[btn.getAttribute("data-db-table")]);
+        };
+      }
+      var first = preferredTable && data.tables[preferredTable] ? preferredTable : names[0];
+      if (first) renderDbTable(first, data.tables[first]);
+      else root.innerHTML = '<p class="empty-state">В базе пока нет таблиц</p>';
+    } catch (err) {
+      if (meta) meta.textContent = "Не удалось загрузить БД";
+      root.innerHTML =
+        '<p class="form-status error">' +
+        escapeHtml(err.message || "Ошибка доступа") +
+        "</p>";
+    }
+  }
+
+  function updateAdminPanels() {
+    var user = getUser();
+    var isAdmin = !!(user && user.is_admin);
+    var loginPanel = document.getElementById("admin-login-panel");
+    var dbPanel = document.getElementById("admin-db-panel");
+    var logoutBtn = document.getElementById("admin-logout-btn");
+    if (!loginPanel && !dbPanel) return;
+    if (loginPanel) loginPanel.hidden = isAdmin;
+    if (dbPanel) dbPanel.hidden = !isAdmin;
+    if (logoutBtn) logoutBtn.hidden = !isAdmin;
+    if (isAdmin) loadAdminDb();
+  }
+
+  function setupAdminPanel() {
+    var form = document.getElementById("admin-login-form");
+    if (form) {
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        clearFieldErrors(form);
+        var status = document.getElementById("admin-login-status");
+        var email = form.email.value.trim();
+        var password = form.password.value;
+        var ok = true;
+        if (!isValidEmail(email)) {
+          showFieldError(form.email, "Введите email администратора");
+          ok = false;
+        }
+        if (password.length < 4) {
+          showFieldError(form.password, "Введите пароль");
+          ok = false;
+        }
+        if (!ok) {
+          setStatus(status, "Исправьте ошибки в форме", false);
+          return;
+        }
+        try {
+          var user = await api("/api/login", {
+            method: "POST",
+            body: JSON.stringify({ email: email, password: password })
+          });
+          if (!user.is_admin) {
+            setStatus(status, "Этот аккаунт не является администратором", false);
+            return;
+          }
+          saveUser(user);
+          setStatus(status, "Вход выполнен. Открыт раздел БД.", true);
+          updateAdminPanels();
+          if (location.hash !== "#db") location.hash = "db";
+        } catch (err) {
+          setStatus(status, err.message || "Неверный логин или пароль", false);
+        }
+      });
+    }
+
+    var logoutBtn = document.getElementById("admin-logout-btn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async function () {
+        try {
+          await api("/api/logout", { method: "POST", headers: authHeaders() });
+        } catch (e) {
+          // локальный выход
+        }
+        saveUser(null);
+        updateAdminPanels();
+        setStatus(document.getElementById("admin-login-status"), "Вы вышли из админки", true);
+      });
+    }
+
+    var reloadDb = document.getElementById("reload-db-btn");
+    if (reloadDb) {
+      reloadDb.addEventListener("click", function () {
+        var active = document.querySelector(".db-tab.is-active");
+        loadAdminDb(active ? active.getAttribute("data-db-table") : null);
+      });
+    }
+
+    updateAdminPanels();
   }
 
   async function loadCurrencyRates() {
