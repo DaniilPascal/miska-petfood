@@ -154,7 +154,7 @@ a:hover {
   font-weight: 700;
   cursor: pointer;
   text-decoration: none;
-  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .btn:hover {
@@ -731,6 +731,12 @@ a:hover {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   overflow: hidden;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.faq-item:has(.faq-trigger[aria-expanded="true"]) {
+  border-color: rgba(47, 93, 80, 0.35);
+  box-shadow: 0 8px 20px rgba(31, 42, 36, 0.06);
 }
 
 .faq-trigger {
@@ -743,25 +749,52 @@ a:hover {
   font-weight: 700;
   cursor: pointer;
   color: var(--ink);
+  transition: color 0.2s ease;
 }
 
 .faq-trigger::after {
   content: "+";
   float: right;
   color: var(--brand);
+  transition: transform 0.25s ease;
+  display: inline-block;
 }
 
 .faq-trigger[aria-expanded="true"]::after {
   content: "−";
+  transform: rotate(180deg);
 }
 
 .faq-panel {
-  padding: 0 1.1rem 1rem;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
   color: var(--muted);
+}
+
+.faq-panel.is-open {
+  grid-template-rows: 1fr;
+}
+
+.faq-panel-inner {
+  overflow: hidden;
+  padding: 0 1.1rem;
+}
+
+.faq-panel.is-open .faq-panel-inner {
+  padding-bottom: 1rem;
 }
 
 .faq-panel p {
   margin: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.faq-panel.is-open p {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .accordion {
@@ -770,11 +803,63 @@ a:hover {
   border-radius: 12px;
   padding: 0.75rem 1rem;
   background: #fff;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.accordion[open] {
+  border-color: rgba(47, 93, 80, 0.35);
+  box-shadow: 0 8px 18px rgba(31, 42, 36, 0.06);
 }
 
 .accordion summary {
   cursor: pointer;
   font-weight: 700;
+  list-style: none;
+  transition: color 0.2s ease;
+}
+
+.accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion summary::after {
+  content: "+";
+  float: right;
+  color: var(--brand);
+  transition: transform 0.25s ease;
+}
+
+.accordion[open] summary::after {
+  content: "−";
+  transform: rotate(180deg);
+}
+
+.accordion[open] .specs,
+.accordion[open] .accordion-body {
+  animation: softReveal 0.3s ease;
+}
+
+@keyframes softReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.product-card,
+.feature,
+.panel {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.product-card:hover,
+.feature:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(31, 42, 36, 0.1);
 }
 
 .loading-line::after {
@@ -910,6 +995,27 @@ body.auth-modal-open .site-footer {
 
 .auth-modal.is-open {
   display: flex;
+  animation: modalBackdrop 0.22s ease;
+}
+
+.auth-modal.is-open .auth-modal-dialog {
+  animation: modalPop 0.28s ease;
+}
+
+@keyframes modalBackdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .auth-modal-dialog {

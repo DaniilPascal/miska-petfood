@@ -374,11 +374,11 @@
       var open = trigger.getAttribute("aria-expanded") === "true";
       list.querySelectorAll(".faq-item").forEach(function (other) {
         other.querySelector(".faq-trigger").setAttribute("aria-expanded", "false");
-        other.querySelector(".faq-panel").hidden = true;
+        other.querySelector(".faq-panel").classList.remove("is-open");
       });
       if (!open) {
         trigger.setAttribute("aria-expanded", "true");
-        panel.hidden = false;
+        panel.classList.add("is-open");
       }
     });
   }
