@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Миска — корм для животных</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">
+        <img src="images/logo.svg" width="44" height="44" alt="Логотип магазина Миска">
+        <span>Миска</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Меню</button>
+      <nav id="site-nav" class="site-nav" aria-label="Основное меню">
+        <a href="index.html" aria-current="page">Главная</a>
+        <a href="catalog.html">Каталог</a>
+        <a href="product.html?id=1">Товар</a>
+        <a href="cart.html">Корзина</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="auth.html">Вход</a>
+        <span class="nav-actions">
+          <span class="user-chip" data-user-chip hidden></span>
+          <a class="btn btn-secondary" href="cart.html">Корзина (<span data-cart-count>0</span>)</a>
+        </span>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="container hero">
+      <div class="hero-copy">
+        <h1>Корм, который выбирают хвостом</h1>
+        <p>
+          Интернет-магазин «Миска» — сухие и влажные рационы, лакомства и витамины
+          для собак, кошек, птиц и грызунов. Подберём корм по виду животного, возрасту и бюджету.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="catalog.html">Смотреть каталог</a>
+          <a class="btn btn-secondary" href="contacts.html">Как нас найти</a>
+        </div>
+      </div>
+      <figure class="hero-panel">
+        <img src="images/products/dog-adult.jpg" alt="Упаковка сухого корма Миска Adult для собак">
+        <figcaption>Хит недели: Миска Adult — 12 кг со вкусом курицы</figcaption>
+      </figure>
+    </section>
+
+    <section class="container section">
+      <div class="section-head">
+        <div>
+          <h2>Популярное сейчас</h2>
+          <p>Шесть позиций, которые чаще всего кладут в корзину</p>
+        </div>
+        <a href="catalog.html">Весь каталог →</a>
+      </div>
+      <div class="grid-products" id="home-products"></div>
+    </section>
+
+    <section class="container section">
+      <div class="section-head">
+        <div>
+          <h2>Почему «Миска»</h2>
+          <p>Коротко о том, чем мы отличаемся</p>
+        </div>
+      </div>
+      <div class="features">
+        <article class="feature">
+          <h3>Подбор по питомцу</h3>
+          <p>Фильтры по виду животного, возрасту и цене — без лишних позиций.</p>
+        </article>
+        <article class="feature">
+          <h3>Понятный состав</h3>
+          <p>На карточке товара сразу видны состав, вес упаковки и ключевые свойства.</p>
+        </article>
+        <article class="feature">
+          <h3>Доставка по городу</h3>
+          <p>Самовывоз из магазина на Невском или курьер в день заказа.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="container section">
+      <div class="panel">
+        <div class="section-head">
+          <div>
+            <h2>Курсы валют ЦБ РФ</h2>
+            <p>Актуальные курсы валют — смотрите цены в рублях, долларах или евро</p>
+          </div>
+          <button class="btn btn-ghost" type="button" id="reload-rates">Обновить курсы</button>
+        </div>
+        <div id="currency-rates" class="rates-box" aria-live="polite">
+          <p class="lead">Загрузка курсов…</p>
+        </div>
+        <div class="currency-switch" id="currency-switch" hidden>
+          <span>Показывать цены в:</span>
+          <button class="btn btn-secondary is-active" type="button" data-currency="RUB">₽</button>
+          <button class="btn btn-secondary" type="button" data-currency="USD">$</button>
+          <button class="btn btn-secondary" type="button" data-currency="EUR">€</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="container section">
+      <div class="section-head">
+        <div>
+          <h2>Частые вопросы</h2>
+          <p>Раскрывающиеся блоки без перезагрузки страницы</p>
+        </div>
+      </div>
+      <div class="faq-list" id="faq-list">
+        <article class="faq-item">
+          <button class="faq-trigger" type="button" aria-expanded="false">
+            Как подобрать корм по животному?
+          </button>
+          <div class="faq-panel" hidden>
+            <p>Откройте каталог и выберите вид животного, возраст и максимальную цену. Список обновится сразу на странице.</p>
+          </div>
+        </article>
+        <article class="faq-item">
+          <button class="faq-trigger" type="button" aria-expanded="false">
+            Можно ли увидеть цену в долларах или евро?
+          </button>
+          <div class="faq-panel" hidden>
+            <p>Да. Курсы подгружаются с сайта ЦБ РФ. На главной и в каталоге переключите валюту кнопками ₽ / $ / €.</p>
+          </div>
+        </article>
+        <article class="faq-item">
+          <button class="faq-trigger" type="button" aria-expanded="false">
+            Как оформить заказ онлайн?
+          </button>
+          <div class="faq-panel" hidden>
+            <p>Войдите в личный кабинет, добавьте товары в корзину и подтвердите заказ. История покупок будет в профиле.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>Миска</strong>
+        <p class="slogan">«Сытый питомец — спокойный хозяин»</p>
+      </div>
+      <div>
+        <p>Санкт-Петербург, Невский пр., 28</p>
+        <p>+7 (812) 555-12-34 · daily 10:00–21:00</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/products-data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

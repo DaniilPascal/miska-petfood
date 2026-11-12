@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Контакты — Миска</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">
+        <img src="images/logo.svg" width="44" height="44" alt="Логотип магазина Миска">
+        <span>Миска</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Меню</button>
+      <nav id="site-nav" class="site-nav" aria-label="Основное меню">
+        <a href="index.html">Главная</a>
+        <a href="catalog.html">Каталог</a>
+        <a href="product.html?id=1">Товар</a>
+        <a href="cart.html">Корзина</a>
+        <a href="contacts.html" aria-current="page">Контакты</a>
+        <a href="auth.html">Вход</a>
+        <span class="nav-actions">
+          <span class="user-chip" data-user-chip hidden></span>
+          <a class="btn btn-secondary" href="cart.html">Корзина (<span data-cart-count>0</span>)</a>
+        </span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container section">
+    <div class="section-head">
+      <div>
+        <h1 class="page-title">Контакты</h1>
+        <p class="lead slogan">«Сытый питомец — спокойный хозяин»</p>
+      </div>
+    </div>
+
+    <div class="contacts-grid">
+      <section class="panel">
+        <h2>Магазин</h2>
+        <p><strong>Адрес:</strong> Санкт-Петербург, Невский проспект, 28</p>
+        <p><strong>Телефон:</strong> <a href="tel:+78125551234">+7 (812) 555-12-34</a></p>
+        <p><strong>Email:</strong> <a href="mailto:hello@miska.shop">hello@miska.shop</a></p>
+        <p><strong>Режим работы:</strong> ежедневно с 10:00 до 21:00</p>
+        <p>Самовывоз заказов — у кассы №2, по коду из SMS.</p>
+
+        <h2>Карта</h2>
+        <iframe
+          class="map-frame"
+          title="Карта магазина Миска на OpenStreetMap"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=30.318%2C59.932%2C30.335%2C59.938&amp;layer=mapnik&amp;marker=59.935%2C30.3265">
+        </iframe>
+        <p><a href="https://www.openstreetmap.org/?mlat=59.935&amp;mlon=30.3265#map=16/59.935/30.3265" target="_blank" rel="noopener">Открыть карту крупнее</a></p>
+      </section>
+
+      <section class="panel">
+        <h2>Обратная связь</h2>
+        <p class="lead">Напишите нам — ответим в течение рабочего дня</p>
+        <form id="feedback-form" novalidate>
+          <div class="field">
+            <label for="fb-name">Имя</label>
+            <input id="fb-name" name="name" type="text" autocomplete="name" aria-describedby="fb-name-error">
+            <p class="field-error" id="fb-name-error" role="alert"></p>
+          </div>
+          <div class="field">
+            <label for="fb-email">Email</label>
+            <input id="fb-email" name="email" type="email" autocomplete="email" aria-describedby="fb-email-error">
+            <p class="field-error" id="fb-email-error" role="alert"></p>
+          </div>
+          <div class="field">
+            <label for="fb-message">Сообщение</label>
+            <textarea id="fb-message" name="message" placeholder="Вопрос о корме, доставке или наличии…" aria-describedby="fb-message-error"></textarea>
+            <p class="field-error" id="fb-message-error" role="alert"></p>
+          </div>
+          <button class="btn btn-primary" type="submit">Отправить</button>
+          <p class="form-status" id="feedback-status" role="status"></p>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>Миска</strong>
+        <p class="slogan">«Сытый питомец — спокойный хозяин»</p>
+      </div>
+      <div>
+        <p>Санкт-Петербург, Невский пр., 28</p>
+        <p>+7 (812) 555-12-34 · daily 10:00–21:00</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/products-data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

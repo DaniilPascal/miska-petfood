@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Логотип Миска">
+  <circle cx="60" cy="60" r="56" fill="#2F5D50"/>
+  <ellipse cx="60" cy="72" rx="34" ry="18" fill="#F4EFE6"/>
+  <ellipse cx="60" cy="68" rx="26" ry="10" fill="#E8C47A"/>
+  <circle cx="38" cy="38" r="10" fill="#F4EFE6"/>
+  <circle cx="58" cy="30" r="9" fill="#F4EFE6"/>
+  <circle cx="78" cy="38" r="10" fill="#F4EFE6"/>
+  <circle cx="48" cy="52" r="8" fill="#F4EFE6"/>
+  <circle cx="70" cy="52" r="8" fill="#F4EFE6"/>
+</svg>

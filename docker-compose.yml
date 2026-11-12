@@ -1,0 +1,19 @@
+services:
+  miska:
+    build: .
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      PORT: "8000"
+      MISKA_DB_PATH: /app/data/miska.db
+      MISKA_CORS_ORIGINS: "*"
+      MISKA_DEMO_EMAIL: demo@miska.shop
+      MISKA_DEMO_PASSWORD: demo1234
+      MISKA_DEMO_NAME: Демо Пользователь
+      MISKA_APP_VERSION: "4.0.0"
+    volumes:
+      - miska_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  miska_data:

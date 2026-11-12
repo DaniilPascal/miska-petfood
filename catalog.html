@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Каталог — Миска</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">
+        <img src="images/logo.svg" width="44" height="44" alt="Логотип магазина Миска">
+        <span>Миска</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Меню</button>
+      <nav id="site-nav" class="site-nav" aria-label="Основное меню">
+        <a href="index.html">Главная</a>
+        <a href="catalog.html" aria-current="page">Каталог</a>
+        <a href="product.html?id=1">Товар</a>
+        <a href="cart.html">Корзина</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="auth.html">Вход</a>
+        <span class="nav-actions">
+          <span class="user-chip" data-user-chip hidden></span>
+          <a class="btn btn-secondary" href="cart.html">Корзина (<span data-cart-count>0</span>)</a>
+        </span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container section">
+    <div class="section-head">
+      <div>
+        <h1 class="page-title">Каталог кормов</h1>
+        <p class="lead">Подберите рацион по виду животного, возрасту и цене</p>
+      </div>
+    </div>
+
+    <form class="filters" id="catalog-filters" aria-label="Фильтры каталога">
+      <div class="field">
+        <label for="filter-animal">Животное</label>
+        <select id="filter-animal" name="animal">
+          <option value="">Все</option>
+          <option value="dog">Собаки</option>
+          <option value="cat">Кошки</option>
+          <option value="bird">Птицы</option>
+          <option value="rodent">Грызуны</option>
+          <option value="other">Другие</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="filter-age">Возраст</label>
+        <select id="filter-age" name="age">
+          <option value="">Любой</option>
+          <option value="junior">Молодые</option>
+          <option value="adult">Взрослые</option>
+          <option value="senior">Пожилые</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="filter-price">Цена до, ₽</label>
+        <input id="filter-price" name="price" type="number" min="0" step="10" placeholder="Например, 3000">
+      </div>
+      <div class="field">
+        <label for="filter-sort">Сортировка</label>
+        <select id="filter-sort" name="sort">
+          <option value="name">По названию</option>
+          <option value="price-asc">Сначала дешевле</option>
+          <option value="price-desc">Сначала дороже</option>
+        </select>
+      </div>
+    </form>
+
+    <div class="catalog-toolbar">
+      <p id="catalog-count">Найдено: 12</p>
+      <div class="currency-switch compact" id="currency-switch">
+        <span>Цены:</span>
+        <button class="btn btn-secondary is-active" type="button" data-currency="RUB">₽</button>
+        <button class="btn btn-secondary" type="button" data-currency="USD">$</button>
+        <button class="btn btn-secondary" type="button" data-currency="EUR">€</button>
+      </div>
+      <button class="btn btn-ghost" type="button" id="reset-filters">Сбросить фильтры</button>
+    </div>
+    <p id="rates-note" class="lead rates-note">Курсы ЦБ подгружаются…</p>
+
+    <div class="grid-products" id="catalog-grid"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>Миска</strong>
+        <p class="slogan">«Сытый питомец — спокойный хозяин»</p>
+      </div>
+      <div>
+        <p>Санкт-Петербург, Невский пр., 28</p>
+        <p>+7 (812) 555-12-34 · daily 10:00–21:00</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/products-data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

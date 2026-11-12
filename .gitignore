@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+backend/miska.db
+backend/**/__pycache__/
+.DS_Store
+.env
+*.log
+bin/
+data/
+.idea/
+.vscode/

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Личный кабинет — Миска</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">
+        <img src="images/logo.svg" width="44" height="44" alt="Логотип магазина Миска">
+        <span>Миска</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Меню</button>
+      <nav id="site-nav" class="site-nav" aria-label="Основное меню">
+        <a href="index.html">Главная</a>
+        <a href="catalog.html">Каталог</a>
+        <a href="product.html?id=1">Товар</a>
+        <a href="cart.html">Корзина</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="auth.html" aria-current="page">Кабинет</a>
+        <span class="nav-actions">
+          <span class="user-chip" data-user-chip hidden></span>
+          <a class="btn btn-secondary" href="cart.html">Корзина (<span data-cart-count>0</span>)</a>
+        </span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container section">
+    <div class="section-head">
+      <div>
+        <h1 class="page-title">Личный кабинет</h1>
+        <p class="lead">Создайте аккаунт или войдите — в кабинете доступны профиль и история заказов.</p>
+      </div>
+      <button class="btn btn-ghost" type="button" id="logout-btn" hidden>Выйти</button>
+    </div>
+
+    <div id="guest-panel" class="auth-grid">
+      <form class="panel" id="login-form" novalidate>
+        <h2>Вход</h2>
+        <div class="field">
+          <label for="login-email">Email</label>
+          <input id="login-email" name="email" type="email" autocomplete="username" aria-describedby="login-email-error">
+          <p class="field-error" id="login-email-error" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="login-password">Пароль</label>
+          <input id="login-password" name="password" type="password" autocomplete="current-password" minlength="4" aria-describedby="login-password-error">
+          <p class="field-error" id="login-password-error" role="alert"></p>
+        </div>
+        <button class="btn btn-primary" type="submit">Войти</button>
+        <p class="form-status" id="login-status" role="status"></p>
+      </form>
+
+      <form class="panel" id="register-form" novalidate>
+        <h2>Регистрация</h2>
+        <div class="field">
+          <label for="reg-name">Имя</label>
+          <input id="reg-name" name="name" type="text" autocomplete="name" aria-describedby="reg-name-error">
+          <p class="field-error" id="reg-name-error" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="reg-email">Email</label>
+          <input id="reg-email" name="email" type="email" autocomplete="username" aria-describedby="reg-email-error">
+          <p class="field-error" id="reg-email-error" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="reg-password">Пароль</label>
+          <input id="reg-password" name="password" type="password" autocomplete="new-password" minlength="4" aria-describedby="reg-password-error">
+          <p class="field-error" id="reg-password-error" role="alert"></p>
+        </div>
+        <button class="btn btn-accent" type="submit">Создать аккаунт</button>
+        <p class="form-status" id="register-status" role="status"></p>
+      </form>
+    </div>
+
+    <div id="user-panel" hidden>
+      <section class="panel">
+        <h2>Профиль</h2>
+        <p>Имя: <strong id="profile-name">—</strong></p>
+        <p>Email: <strong id="profile-email">—</strong></p>
+        <p class="lead">Здесь ваши данные аккаунта. Пароль хранится в зашифрованном виде.</p>
+      </section>
+
+      <section class="panel stack-gap">
+        <div class="section-head">
+          <div>
+            <h2>Мои заказы</h2>
+            <p class="lead">Список ваших покупок в магазине «Миска»</p>
+          </div>
+          <button class="btn btn-ghost" type="button" id="reload-orders">Обновить</button>
+        </div>
+        <div id="orders-list">
+          <p class="lead">Загрузка заказов…</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>Миска</strong>
+        <p class="slogan">«Сытый питомец — спокойный хозяин»</p>
+      </div>
+      <div>
+        <p>Санкт-Петербург, Невский пр., 28</p>
+        <p>+7 (812) 555-12-34 · daily 10:00–21:00</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/products-data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

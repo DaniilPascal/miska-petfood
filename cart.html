@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Корзина — Миска</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">
+        <img src="images/logo.svg" width="44" height="44" alt="Логотип магазина Миска">
+        <span>Миска</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Меню</button>
+      <nav id="site-nav" class="site-nav" aria-label="Основное меню">
+        <a href="index.html">Главная</a>
+        <a href="catalog.html">Каталог</a>
+        <a href="product.html?id=1">Товар</a>
+        <a href="cart.html" aria-current="page">Корзина</a>
+        <a href="contacts.html">Контакты</a>
+        <a href="auth.html">Вход</a>
+        <span class="nav-actions">
+          <span class="user-chip" data-user-chip hidden></span>
+          <a class="btn btn-secondary" href="cart.html">Корзина (<span data-cart-count>0</span>)</a>
+        </span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container section">
+    <div class="section-head">
+      <div>
+        <h1 class="page-title">Корзина</h1>
+        <p class="lead">Проверьте состав заказа и оформите покупку</p>
+      </div>
+    </div>
+
+    <div id="cart-root">
+      <div class="empty-state">Корзина пока пуста. Загляните в <a href="catalog.html">каталог</a>.</div>
+    </div>
+
+    <div class="cart-summary" id="cart-checkout-block" hidden>
+      <form class="panel" id="checkout-form" novalidate>
+        <h2>Оформление покупки</h2>
+        <div class="field">
+          <label for="checkout-name">Имя получателя</label>
+          <input id="checkout-name" name="name" type="text" autocomplete="name" placeholder="Анна" aria-describedby="checkout-name-error">
+          <p class="field-error" id="checkout-name-error" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="checkout-phone">Телефон</label>
+          <input id="checkout-phone" name="phone" type="tel" autocomplete="tel" placeholder="+7 900 000-00-00" aria-describedby="checkout-phone-error">
+          <p class="field-error" id="checkout-phone-error" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="checkout-delivery">Способ получения</label>
+          <select id="checkout-delivery" name="delivery" aria-describedby="checkout-delivery-error">
+            <option value="">Выберите способ</option>
+            <option value="pickup">Самовывоз — Невский пр., 28</option>
+            <option value="courier">Курьер по городу</option>
+          </select>
+          <p class="field-error" id="checkout-delivery-error" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="checkout-comment">Комментарий</label>
+          <textarea id="checkout-comment" name="comment" placeholder="Код домофона, удобное время…"></textarea>
+        </div>
+        <p class="lead" id="checkout-auth-hint">Чтобы оформить заказ, сначала <a href="auth.html">войдите</a> в кабинет.</p>
+        <button class="btn btn-primary" type="submit">Подтвердить заказ</button>
+        <p class="form-status" id="checkout-status" role="status"></p>
+      </form>
+
+      <aside class="panel">
+        <h2>Итого</h2>
+        <p>Позиций: <strong id="summary-count">0</strong></p>
+        <p>Сумма: <strong id="summary-total">0 ₽</strong></p>
+        <p class="lead">Бесплатная доставка от 3000 ₽</p>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>Миска</strong>
+        <p class="slogan">«Сытый питомец — спокойный хозяин»</p>
+      </div>
+      <div>
+        <p>Санкт-Петербург, Невский пр., 28</p>
+        <p>+7 (812) 555-12-34 · daily 10:00–21:00</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/products-data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
