@@ -90,7 +90,7 @@
   function updateUserChip() {
     var user = getUser();
     document.querySelectorAll("[data-user-chip]").forEach(function (el) {
-      if (user) {
+      if (user && !user.is_admin) {
         el.hidden = false;
         el.textContent = user.name || user.email;
       } else {
@@ -767,8 +767,7 @@
     modal.innerHTML =
       '<div class="auth-modal-dialog">' +
       '<div class="auth-modal-head">' +
-      '<div><h2 id="auth-modal-title">Вход и регистрация</h2>' +
-      '<p class="lead">Войдите в аккаунт или создайте новый</p></div>' +
+      '<h2 id="auth-modal-title">Вход</h2>' +
       '<button class="auth-modal-close" type="button" data-close-auth aria-label="Закрыть">×</button>' +
       "</div>" +
       '<div class="auth-modal-tabs">' +
@@ -782,7 +781,7 @@
       '<div class="field"><label for="modal-login-password">Пароль</label>' +
       '<input id="modal-login-password" name="password" type="password" autocomplete="current-password" aria-describedby="modal-login-password-error">' +
       '<p class="field-error" id="modal-login-password-error" role="alert"></p></div>' +
-      '<button class="btn btn-primary" type="submit">Войти</button>' +
+      '<button class="btn btn-primary btn-block" type="submit">Войти</button>' +
       '<p class="form-status" id="modal-login-status" role="status"></p>' +
       "</form>" +
       '<form class="auth-modal-pane" id="modal-register-form" data-auth-pane="register" hidden novalidate>' +
@@ -795,7 +794,7 @@
       '<div class="field"><label for="modal-reg-password">Пароль</label>' +
       '<input id="modal-reg-password" name="password" type="password" autocomplete="new-password" aria-describedby="modal-reg-password-error">' +
       '<p class="field-error" id="modal-reg-password-error" role="alert"></p></div>' +
-      '<button class="btn btn-accent" type="submit">Создать аккаунт</button>' +
+      '<button class="btn btn-accent btn-block" type="submit">Создать аккаунт</button>' +
       '<p class="form-status" id="modal-register-status" role="status"></p>' +
       "</form>" +
       "</div>";
@@ -826,6 +825,8 @@
     modal.querySelectorAll("[data-auth-pane]").forEach(function (pane) {
       pane.hidden = pane.getAttribute("data-auth-pane") !== tab;
     });
+    var title = document.getElementById("auth-modal-title");
+    if (title) title.textContent = tab === "register" ? "Регистрация" : "Вход";
   }
 
   function setupAuthModal() {

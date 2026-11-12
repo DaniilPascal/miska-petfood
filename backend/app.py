@@ -35,7 +35,7 @@ DEMO_PASSWORD = os.getenv("MISKA_DEMO_PASSWORD", "demo1234")
 DEMO_NAME = os.getenv("MISKA_DEMO_NAME", "Демо Пользователь")
 ADMIN_EMAIL = os.getenv("MISKA_ADMIN_EMAIL", "admin").strip().lower()
 ADMIN_PASSWORD = os.getenv("MISKA_ADMIN_PASSWORD", "123456")
-ADMIN_NAME = os.getenv("MISKA_ADMIN_NAME", "Администратор")
+ADMIN_NAME = os.getenv("MISKA_ADMIN_NAME", "admin")
 APP_VERSION = os.getenv("MISKA_APP_VERSION", "4.0.0")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
