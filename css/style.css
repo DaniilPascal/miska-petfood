@@ -26,6 +26,7 @@
 
 html {
   scroll-behavior: smooth;
+  height: 100%;
 }
 
 body {
@@ -37,7 +38,14 @@ body {
     radial-gradient(circle at top right, rgba(47, 93, 80, 0.12), transparent 24%),
     linear-gradient(180deg, #f7f2ea 0%, var(--bg) 45%, #ebe3d7 100%);
   min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   line-height: 1.55;
+}
+
+body > main {
+  flex: 1 0 auto;
 }
 
 img {
@@ -608,10 +616,12 @@ a:hover {
 }
 
 .site-footer {
-  margin-top: 2.5rem;
+  margin-top: auto;
   border-top: 1px solid var(--line);
   background: rgba(31, 63, 55, 0.96);
   color: #f4efe6;
+  flex-shrink: 0;
+  width: 100%;
 }
 
 .footer-inner {
