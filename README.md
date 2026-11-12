@@ -5,10 +5,12 @@
 
 ## Публичный адрес (ПР 4)
 
-**HTTPS:** https://witty-spies-sink.loca.lt
+Репозиторий: https://github.com/DaniilPascal/miska-petfood
 
-> Временный туннель (пока запущены сервер и `localtunnel` на этом компьютере).  
-> Для постоянного адреса задеплойте на Render — HTTPS выдаётся автоматически.
+Деплой на Render (одна кнопка после входа):  
+https://dashboard.render.com/blueprints/new?repo=https%3A%2F%2Fgithub.com%2FDaniilPascal%2Fmiska-petfood
+
+После деплоя адрес будет вида `https://miska-petfood.onrender.com` (HTTPS автоматически).
 
 ### Тестовая учётная запись
 - **email:** `demo@miska.shop`
